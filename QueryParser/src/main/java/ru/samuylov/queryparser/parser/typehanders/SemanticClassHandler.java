@@ -1,0 +1,64 @@
+/**
+ *
+ */
+package ru.samuylov.queryparser.parser.typehanders;
+
+/**
+ * обработчик для типа подзапроса "Семантические классы"
+ *
+ * @author samuylov
+ *
+ */
+public class SemanticClassHandler implements SubQueryTypeHandler {
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see ru.samuylov.queryparser.parser.typehanders.SubQueryTypeHandler#transformFirst(java.lang.String)
+   */
+  @Override
+  public String transformFirst(String first) {
+    return first;
+  }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see ru.samuylov.queryparser.parser.typehanders.SubQueryTypeHandler#transformLast(java.lang.String)
+   */
+  @Override
+  public String transformLast(String last) {
+    return last;
+  }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see ru.samuylov.queryparser.parser.typehanders.SubQueryTypeHandler#isClosingToken(java.lang.String)
+   */
+  @Override
+  public boolean isClosingToken(String token) {
+    return canAdd(token);
+  }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see ru.samuylov.queryparser.parser.typehanders.SubQueryTypeHandler#canAdd(java.lang.String)
+   */
+  @Override
+  public boolean canAdd(String token) {
+    return token.matches("^[A-Z0-9_?\\*]+$");
+  }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see ru.samuylov.queryparser.parser.typehanders.SubQueryTypeHandler#isStartingToken(java.lang.String)
+   */
+  @Override
+  public boolean isStartingToken(String token) {
+    return canAdd(token);
+  }
+
+}
