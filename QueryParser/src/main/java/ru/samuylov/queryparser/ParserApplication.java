@@ -3,62 +3,52 @@
  */
 package ru.samuylov.queryparser;
 
-import java.io.IOException;
-import java.util.Collection;
-
+import org.apache.nifi.util.console.TextDevice;
+import org.apache.nifi.util.console.TextDevices;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ru.samuylov.queryparser.parser.ParseException;
-import ru.samuylov.queryparser.parser.SearchQueryParser;
-import ru.samuylov.queryparser.parser.SubQuery;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
- * класс для тестовго запуска парсера
+ * Main class for demonstration or query parsing
  *
  * @author samuylov
- *
  */
-public class ParserApplication {
-  private static final Logger log = LoggerFactory.getLogger(ParserApplication.class);
+public final class ParserApplication {
+    private static final Logger log = LoggerFactory.getLogger(ParserApplication.class);
 
-  public static void main(String[] args) throws IOException, ParseException {
-    boolean exit = false;
-    SearchQueryParser parser = new SearchQueryParser();
+    ////////////////////////////////////////////// Main ////////////////////////////////////////////////////////
+    public static void main(String[] args) {
+        boolean exit = false;
+        TextDevice textDevice = TextDevices.defaultTextDevice();
 
-    while (!exit) {
-      System.console().writer().println("Введите строку для разбора поискового запроса:");
+        while (!exit) {
+            textDevice.printf("Enter search request:\n");
 
-      processLine(parser);
+            processLine(textDevice);
 
-      System.console().writer().println();
-      System.console().writer().println("Продолжить (Y - да, все остальное - закончить)?");
-      String answer = System.console().readLine();
-      exit = !"Y".equalsIgnoreCase(answer);
-    }
-
-  }
-
-  /**
-   * запрашивает и обрабатывает строку поискового запроса
-   *
-   * @param parser
-   */
-  private static void processLine(SearchQueryParser parser) {
-    String sourceQuery = System.console().readLine();
-    try {
-      Collection<SubQuery> result = parser.parse(sourceQuery);
-      if (result.isEmpty()) {
-        System.console().writer().println("Пустой результат разбора");
-      } else {
-        for (SubQuery subQuery : result) {
-          System.console().writer().println(subQuery);
+            textDevice.printf("Parse next query? (Y - yes, something else to stop)\n");
+            String answer = textDevice.readLine();
+            exit = !"Y".equalsIgnoreCase(answer);
         }
-      }
-    } catch (ParseException e) {
-      System.console().writer().println("Ошибка разбора запроса: " + e.getMessage());
-      log.error(e.getMessage(), e);
+
     }
-  }
+
+    ////////////////////////////////////////////// Implementation ////////////////////////////////////////////////////////
+    private static void processLine(@NotNull TextDevice textDevice) {
+        String sourceQuery = textDevice.readLine();
+        try {
+            SearchQuery query = new SearchQuery(sourceQuery);
+            textDevice.printf("Parsing result:\n");
+            textDevice.printf(query.toString()+ '\n');
+        } catch (Exception e) {
+            textDevice.printf("Search query parsing error: %s\n", e.getMessage());
+            log.error(e.getMessage(), e);
+        }
+    }
 
 }
