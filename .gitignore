@@ -3,3 +3,5 @@ build
 **/src/main/generated
 *.class
 out
+.idea
+logs
