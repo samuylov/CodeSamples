@@ -17,6 +17,7 @@ Supported expressions:
 6) grouping - subexpressions, surrounded by (). subexpressions transfroms to should queries fo new bool query.
 
 
-exapmples of search requests:
+examples of search requests:
 +fox browh|red -wolf 
 +fox (browh grey)|(red green) -wolf 
++fox (browh grey)|(red green) -~wilf 
